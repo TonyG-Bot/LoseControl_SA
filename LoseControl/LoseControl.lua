@@ -1,4 +1,5 @@
 local L = "LoseControl"
+local BS = AceLibrary("Babble-Spell-2.2a");
 local CC      = "CC"
 local Silence = "Silence"
 local Disarm  = "Disarm"
@@ -9,98 +10,175 @@ local PvE     = "PvE"
 
 local Prio = {CC,Silence,Disarm,Root,Snare}
 
+--[[
+	SaySapped: Says "Sapped!" when you get sapped allowing you to notify nearby players about it.
+	Also works for many other CCs.
+	Author: Coax  - Nostalrius PvP
+	Translate and rework by: CFM - LH
+	Original idea: Bitbyte of Icecrown
+--]]
+
+-- Slash Command
+SLASH_LOSECONTROL1 = '/saysapped'
+SLASH_LOSECONTROL2 = '/ssap'
+function SlashCmdList.LOSECONTROL(msg, editbox)
+  	if SaySappedConfig then
+		SaySappedConfig = false
+		DEFAULT_CHAT_FRAME:AddMessage(SS_DISABLED)
+	else
+		SaySappedConfig = true
+		DEFAULT_CHAT_FRAME:AddMessage(SS_ENABLED)
+	end
+end
+
+-- Translated by CFM
+if GetLocale()=="ruRU" then
+	SS_Sapped='Sapped!'
+	SS_SpellSap='"Ошеломление".'
+	SS_Loaded='|cffffff55LoseControl загружен /ssap. Мод от CFM.'
+	SS_SELFHARMFULL='Вы находитесь'
+	SS_DISABLED='|cffffff55SaySapped выключен!'
+	SS_ENABLED='|cffffff55SaySapped включен!'
+else
+	SS_Sapped='Sapped!'
+	SS_SpellSap=' Sap.'
+	SS_Loaded='|cffffff55LoseControl loaded /ssap. Mod by CFM.'
+	SS_SELFHARMFULL='You are'
+	SS_DISABLED='|cffffff55SaySapped disabled!'
+	SS_ENABLED='|cffffff55SaySapped enabled!'
+end
+
+local SaySapped = CreateFrame("Frame",nil,UIParent)
+SaySapped:RegisterEvent("ADDON_LOADED")
+
+SaySapped:SetScript("OnEvent", function()
+	if arg1 == "LoseControl" then
+		DEFAULT_CHAT_FRAME:AddMessage(SS_Loaded)
+		if not SaySappedConfig then
+			SaySappedConfig = true;
+		end
+		SaySapped.checkbuff = CreateFrame("Frame")
+		SaySapped.checkbuff:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE")
+		SaySapped.checkbuff:SetScript("OnEvent", function()
+			if string.find(arg1, SS_SELFHARMFULL) then
+				SaySapped_FilterDebuffs(arg1)
+			end
+		end)
+	end
+end)
+
+-- Check if sapped
+function SaySapped_FilterDebuffs(spell)
+	if string.find(spell, SS_SpellSap) and SaySappedConfig then
+		SendChatMessage(SS_Sapped,"SAY")
+		DEFAULT_CHAT_FRAME:AddMessage(SS_Sapped)
+	end
+end
+
 local spellIds = {
 	-- Druid
-	["Hibernate"] = CC, -- Hibernate
-	["Starfire Stun"] = CC, -- Starfire
-	["Entangling Roots"] = Root, -- Entangling Roots
-	["Bash"] = CC, -- Bash
-	["Pounce Bleed"] = CC, -- Pounce
-	["Feral Charge Effect"] = Root, -- Feral Charge
+	[BS["Hibernate"]] = CC, -- Hibernate
+	[BS["Starfire Stun"]] = CC, -- Starfire
+	[BS["Bash"]] = CC, -- Bash
+	[BS["Feral Charge Effect"]] = Root, -- Feral Charge Efect
+	[BS["Pounce"]] = CC, -- Pounce
+	[BS["Pounce Bleed"]] = CC, -- Pounce
+	[BS["Entangling Roots"]] = Root, -- Entangling Roots
 	-- Hunter
-	["Intimidation"] = CC, -- Intimidation
-	["Scare Beast"] = CC, -- Scare Beast
-	["Scatter Shot"] = CC, -- Scatter Shot
-	["Improved Concussive Shot"] = CC, -- Improved Concussive Shot
-	["Concussive Shot"] = Snare, -- Concussive Shot
-	["Freezing Trap Effect"] = CC, -- Freezing Trap
-	["Freezing Trap"] = CC, -- Freezing Trap
-	["Frost Trap Aura"] = Root, -- Freezing Trap
-	["Frost Trap"] = Root, -- Frost Trap
-	["Entrapment"] = Root, -- Entrapment
-	["Wyvern Sting"] = CC, -- Wyvern Sting; requires a hack to be removed later
-	["Counterattack"] = Root, -- Counterattack
-	["Improved Wing Clip"] = Root, -- Improved Wing Clip
-	["Wing Clip"] = Snare, -- Wing Clip
+	[BS["Freezing Trap"]] = CC, -- Freezing Trap
+	[BS["Intimidation"]] = CC, -- Intimidation
+	[BS["Scare Beast"]] = CC, -- Scare Beast
+	[BS["Scatter Shot"]] = CC, -- Scatter Shot
+	[BS["Improved Concussive Shot"]] = CC, -- Improved Concussive Shot
+	[BS["Concussive Shot"]] = Snare, -- Concussive Shot
+	[BS["Freezing Trap Effect"]] = CC, -- Freezing Trap
+	[BS["Freezing Trap"]] = CC, -- Freezing Trap
+	[BS["Frost Trap Aura"]] = Root, -- Freezing Trap
+	[BS["Frost Trap"]] = Root, -- Frost Trap
+	[BS["Entrapment"]] = Root, -- Entrapment
+	[BS["Wyvern Sting"]] = CC, -- Wyvern Sting; requires a hack to be removed later
+	[BS["Counterattack"]] = Root, -- Counterattack
+	[BS["Improved Wing Clip"]] = Root, -- Improved Wing Clip
+	[BS["Wing Clip"]] = Snare, -- Wing Clip
 	["Boar Charge"] = Root, -- Boar Charge
 	-- Mage
-	["Polymorph"] = CC, -- Polymorph: Sheep
-	["Polymorph: Turtle"] = CC, -- Polymorph: Turtle
-	["Polymorph: Pig"] = CC, -- Polymorph: Pig
+	[BS["Polymorph"]] = CC, -- Polymorph: Sheep
+	[BS["Polymorph: Turtle"]] = CC, -- Polymorph: Turtle
+	[BS["Polymorph: Pig"]] = CC, -- Polymorph: Pig
 	["Polymorph: Cow"] = CC, -- Polymorph: Cow
 	["Polymorph: Chicken"] = CC, -- Polymorph: Chicken
-	["Counterspell - Silenced"] = Silence, -- Counterspell
-	["Impact"] = CC, -- Impact
-	["Blast Wave"] = Snare, -- Blast Wave
-	["Frostbite"] = Root, -- Frostbite
-	["Frost Nova"] = Root, -- Frost Nova
-	["Frostbolt"] = Snare, -- Frostbolt
-	["Cone of Cold"] = Snare, -- Cone of Cold
-	["Chilled"] = Snare, -- Improved Blizzard + Ice armor
+	[BS["Counterspell - Silenced"]] = Silence, -- Counterspell
+	[BS["Impact"]] = CC, -- Impact
+	[BS["Blast Wave"]] = Snare, -- Blast Wave
+	[BS["Frostbite"]] = Root, -- Frostbite
+	[BS["Freeze"]] = Root, -- Freeze
+	[BS["Frost Nova"]] = Root, -- Frost Nova
+	[BS["Frostbolt"]] = Snare, -- Frostbolt
+	[BS["Chilled"]] = Snare, -- Improved Blizzard + Ice armor
+	[BS["Cone of Cold"]] = Snare, -- Cone of Cold
+	[BS["Counterspell - Silenced"]] = Silence, -- Counterspell - Silenced
 	-- Paladin
-	["Hammer of Justice"] = CC, -- Hammer of Justice
-	["Repentance"] = CC, -- Repentance
+	[BS["Hammer of Justice"]] = CC, -- Hammer of Justice
+	[BS["Repentance"]] = CC, -- Repentance
 	-- Priest
-	["Mind Control"] = CC, -- Mind Control
-	["Psychic Scream"] = CC, -- Psychic Scream
-	["Blackout"] = CC, -- Blackout
-	["Silence"] = Silence, -- Silence
-	["Mind Flay"] = Snare, -- Mind Flay
+	[BS["Mind Control"]] = CC, -- Mind Control
+	[BS["Psychic Scream"]] = CC, -- Psychic Scream
+	[BS["Blackout"]] = CC, -- Затмение
+	[BS["Silence"]] = Silence, -- Silence
+	[BS["Mind Flay"]] = Snare, -- Mind Flay
 	-- Rogue
-	["Blind"] = CC, -- Blind
-	["Cheap Shot"] = CC, -- Cheap Shot
-	["Gouge"] = CC, -- Gouge
-	["Kidney Shot"] = CC, -- Kidney shot; the buff is 30621
-	["Sap"] = CC, -- Sap
-	["Kick - Silenced"] = Silence, -- Kick
-	["Crippling Poison"] = Snare, -- Crippling Poison
+	[BS["Blind"]] = CC, -- Blind
+	[BS["Cheap Shot"]] = CC, -- Cheap Shot
+	[BS["Gouge"]] = CC, -- Gouge
+	[BS["Kidney Shot"]] = CC, -- Kidney shot; the buff is 30621
+	[BS["Sap"]] = CC, -- Sap
+	[BS["Kick - Silenced"]] = Silence, -- Kick
+	[BS["Crippling Poison"]] = Snare, -- Crippling Poison
 	-- Warlock
-	["Death Coil"] = CC, -- Death Coil
-	["Fear"] = CC, -- Fear
-	["Howl of Terror"] = CC, -- Howl of Terror
-	["Curse of Exhaustion"] = Snare, -- Curse of Exhaustion
-	["Pyroclasm"] = CC, -- Pyroclasm
-	["Aftermath"] = Snare, -- Aftermath
-	["Seduction"] = CC, -- Seduction
-	["Spell Lock"] = Silence, -- Spell Lock
-	["Inferno Effect"] = CC, -- Inferno Effect
-	["Inferno"] = CC, -- Inferno
-	["Cripple"] = Snare, -- Cripple
+	[BS["Death Coil"]] = CC, -- Death Coil
+	[BS["Fear"]] = CC, -- Fear
+	[BS["Howl of Terror"]] = CC, -- Howl of Terror
+	[BS["Curse of Exhaustion"]] = Snare, -- Curse of Exhaustion
+	[BS["Pyroclasm"]] = CC, -- Pyroclasm
+	[BS["Aftermath"]] = Snare, -- Aftermath
+	[BS["Seduction"]] = CC, -- Seduction
+	[BS["Spell Lock"]] = Silence, -- Spell Lock
+	[BS["Inferno Effect"]] = CC, -- Inferno Effect
+	[BS["Inferno"]] = CC, -- Inferno
+	[BS["Cripple"]] = Snare, -- Cripple
 	-- Warrior
-	["Charge Stun"] = CC, -- Charge Stun
-	["Intercept Stun"] = CC, -- Intercept Stun
-	["Intimidating Shout"] = CC, -- Intimidating Shout
-	["Revenge Stun"] = CC, -- Revenge Stun
-	["Concussion Blow"] = CC, -- Concussion Blow
-	["Piercing Howl"] = Snare, -- Piercing Howl
-	["Shield Bash - Silenced"] = Silence, -- Shield Bash - Silenced
-	--Shaman	
-	["Frostbrand Weapon"] = Snare, -- Frostbrand Weapon
-	["Frost Shock"] = Snare, -- Frost Shock
-	["Earthbind"] = Snare, -- Earthbind
-	["Earthbind Totem"] = Snare, -- Earthbind Totem
+	[BS["Charge Stun"]] = CC, -- Charge Stun
+	[BS["Intercept Stun"]] = CC, -- Intercept Stun
+	[BS["Intimidating Shout"]] = CC, -- Intimidating Shout
+	[BS["Revenge Stun"]] = CC, -- Revenge Stun
+	[BS["Concussion Blow"]] = CC, -- Concussion Blow
+	[BS["Piercing Howl"]] = Snare, -- Piercing Howl
+	[BS["Mortal Strike"]] = Snare, -- Mortal Strike CFM
+	[BS["Shield Bash - Silenced"]] = Silence, -- Shield Bash - Silenced
+	--CFM
 	-- other
-	["War Stomp"] = CC, -- War Stomp
-	["Tidal Charm"] = CC, -- Tidal Charm
-	["Mace Stun Effect"] = CC, -- Mace Stun Effect
-	["Stun"] = CC, -- Stun
+	[BS["War Stomp"]] = CC, -- War Stomp
+	[BS["Mace Stun Effect"]] = CC, -- Mace Specialization CFM
+	[BS["Ice Blast"]] = CC, -- Ice Yeti
+	[BS["Snap Kick"]] = CC, -- Ashenvale Outrunner
+	[BS["Lash"]] = CC, -- Lashtail Raptor
+	[BS["Crystal Gaze"]] = CC, -- Crystal Spine Basilisk
+	[BS["Web"]] = Root,      -- Carrion Lurker
+	[BS["Terrify"]] = CC, -- Fr Pterrordax
+	[BS["Terrifying Screech"]] = CC, -- Pterrordax
+	[BS["Flash Freeze"]] = CC, -- Freezing Ghoul
+	[BS["Knockdown"]] = CC, -- Zaeldarr the Outcast etc
+	[BS["Net"]] = Root,-- Witherbark Headhunter etc
+	[BS["Flash Bomb"]] = CC,-- AV 	Световая бомба
+	[BS["Reckless Charge"]] = CC, -- инженерка Безрассудная атака
+	[BS["Tidal Charm"]] = CC, -- Tidal Charm
+	[BS["Stun"]] = CC, -- Stun
 	["Gnomish Mind Control Cap"] = CC, -- Gnomish Mind Control Cap
-	["Reckless Charge"] = CC, -- Reckless Charge
-	["Sleep"] = CC, -- Sleep
-	["Dazed"] = Snare, -- Dazed
-	["Freeze"] = Root, -- Freeze
+	[BS["Sleep"]] = CC, -- Sleep
+	[BS["Dazed"]] = Snare, -- Dazed
+	[BS["Freeze"]] = Root, -- Freeze
 	["Chill"] = Snare, -- Chill
-	["Charge"] = CC, -- Charge
+	[BS["Charge"]] = CC, -- Charge
 }
 
 local wipe = function(t)
