@@ -1079,6 +1079,8 @@ BabbleSpell:RegisterTranslations("enUS", function()
 		["Polearm Specialization"] = true,
 		["Polearms"] = true,
 		["Polymorph"] = true,
+		["Polymorph: Chicken"] = true,
+		["Polymorph: Cow"] = true,
 		["Polymorph: Pig"] = true,
 		["Polymorph: Turtle"] = true,
 		["Portal: Darnassus"] = true,
