@@ -181,6 +181,7 @@ BabbleSpell:RegisterTranslations("enUS", function()
 		["Bloodlust"] = true,
 		["Bloodrage"] = true,
 		["Bloodthirst"] = true,
+		["Boar Charge"] = true,
 		["Bomb"] = true,
 		["Booming Voice"] = true,
 		["Boulder"] = true,
