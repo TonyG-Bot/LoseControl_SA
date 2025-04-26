@@ -2958,6 +2958,13 @@ BabbleSpell:RegisterTranslations("esES", function()
 	}
 end)
 
+-- Validar claves faltantes
+for key in pairs(BabbleSpell["enUS"]) do
+    if not BabbleSpell["esES"][key] then
+        print("Falta la clave en esES: " .. key)
+    end
+end
+
 BabbleSpell:RegisterTranslations("ruRU", function()
 	return {
 		["Abolish Disease"] = "Устранение болезни",
