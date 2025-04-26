@@ -25,7 +25,7 @@ if not AceLibrary:IsNewVersion(MAJOR_VERSION, MINOR_VERSION) then return end
 local BabbleSpell = AceLibrary("AceLocale-2.2"):new(MAJOR_VERSION)
 
 -- uncomment below for debug information
-BabbleSpell:EnableDebugging()
+-- BabbleSpell:EnableDebugging()
 
 BabbleSpell:RegisterTranslations("enUS", function()
     return {
@@ -2957,16 +2957,6 @@ BabbleSpell:RegisterTranslations("esES", function()
 		["Wyvern Sting"] = "Aguijón de Wyvern",
 	}
 end)
-
--- Validar claves faltantes
-local enUS = BabbleSpell["enUS"]
-local esES = BabbleSpell["esES"]
-
-for key in pairs(enUS) do
-    if not esES[key] then
-        print("Falta la clave en esES: " .. key)
-    end
-end
 
 BabbleSpell:RegisterTranslations("ruRU", function()
 	return {
