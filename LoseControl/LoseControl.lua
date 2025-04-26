@@ -85,7 +85,6 @@ local spellIds = {
 	[BS["Pounce Bleed"]] = CC, -- Pounce
 	[BS["Entangling Roots"]] = Root, -- Entangling Roots
 	-- Hunter
-	[BS["Freezing Trap"]] = CC, -- Freezing Trap
 	[BS["Intimidation"]] = CC, -- Intimidation
 	[BS["Scare Beast"]] = CC, -- Scare Beast
 	[BS["Scatter Shot"]] = CC, -- Scatter Shot
@@ -107,7 +106,6 @@ local spellIds = {
 	[BS["Polymorph: Pig"]] = CC, -- Polymorph: Pig
 	[BS["Polymorph: Cow"]] = CC, -- Polymorph: Cow
 	[BS["Polymorph: Chicken"]] = CC, -- Polymorph: Chicken
-	[BS["Counterspell - Silenced"]] = Silence, -- Counterspell
 	[BS["Impact"]] = CC, -- Impact
 	[BS["Blast Wave"]] = Snare, -- Blast Wave
 	[BS["Frostbite"]] = Root, -- Frostbite
@@ -173,11 +171,11 @@ local spellIds = {
 	[BS["Reckless Charge"]] = CC, -- инженерка Безрассудная атака
 	[BS["Tidal Charm"]] = CC, -- Tidal Charm
 	[BS["Stun"]] = CC, -- Stun
-	["Gnomish Mind Control Cap"] = CC, -- Gnomish Mind Control Cap
+	[BS["Gnomish Mind Control Cap"]] = CC, -- Gnomish Mind Control Cap
 	[BS["Sleep"]] = CC, -- Sleep
 	[BS["Dazed"]] = Snare, -- Dazed
 	[BS["Freeze"]] = Root, -- Freeze
-	["Chill"] = Snare, -- Chill
+	[BS["Chill"]]= Snare, -- Chill
 	[BS["Charge"]] = CC, -- Charge
 }
 
