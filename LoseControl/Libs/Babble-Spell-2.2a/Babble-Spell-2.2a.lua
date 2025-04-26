@@ -25,7 +25,7 @@ if not AceLibrary:IsNewVersion(MAJOR_VERSION, MINOR_VERSION) then return end
 local BabbleSpell = AceLibrary("AceLocale-2.2"):new(MAJOR_VERSION)
 
 -- uncomment below for debug information
--- BabbleSpell:EnableDebugging()
+BabbleSpell:EnableDebugging()
 
 BabbleSpell:RegisterTranslations("enUS", function()
     return {
