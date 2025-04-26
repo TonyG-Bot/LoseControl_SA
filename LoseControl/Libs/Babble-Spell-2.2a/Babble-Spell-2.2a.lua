@@ -2959,8 +2959,11 @@ BabbleSpell:RegisterTranslations("esES", function()
 end)
 
 -- Validar claves faltantes
-for key in pairs(BabbleSpell["enUS"]) do
-    if not BabbleSpell["esES"][key] then
+local enUS = BabbleSpell["enUS"]
+local esES = BabbleSpell["esES"]
+
+for key in pairs(enUS) do
+    if not esES[key] then
         print("Falta la clave en esES: " .. key)
     end
 end
