@@ -100,13 +100,13 @@ local spellIds = {
 	[BS["Counterattack"]] = Root, -- Counterattack
 	[BS["Improved Wing Clip"]] = Root, -- Improved Wing Clip
 	[BS["Wing Clip"]] = Snare, -- Wing Clip
-	["Boar Charge"] = Root, -- Boar Charge
+	[BS["Boar Charge"]] = Root, -- Boar Charge
 	-- Mage
 	[BS["Polymorph"]] = CC, -- Polymorph: Sheep
 	[BS["Polymorph: Turtle"]] = CC, -- Polymorph: Turtle
 	[BS["Polymorph: Pig"]] = CC, -- Polymorph: Pig
-	["Polymorph: Cow"] = CC, -- Polymorph: Cow
-	["Polymorph: Chicken"] = CC, -- Polymorph: Chicken
+	[BS["Polymorph: Cow"]] = CC, -- Polymorph: Cow
+	[BS["Polymorph: Chicken"]] = CC, -- Polymorph: Chicken
 	[BS["Counterspell - Silenced"]] = Silence, -- Counterspell
 	[BS["Impact"]] = CC, -- Impact
 	[BS["Blast Wave"]] = Snare, -- Blast Wave
